@@ -3,23 +3,20 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# PostgreSQL bağlantı dizesini buraya ekliyoruz
+# PostgreSQL bağlantı dizesi
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:XStvtrZHbETTLQQWRnGuSbqvMmsMCMft@postgres.railway.internal:5432/railway'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# SQLAlchemy ile veritabanını bağla
 db = SQLAlchemy(app)
 
-# Örnek bir model
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-
-# Ana sayfa için bir rota tanımla
-@app.route('/')
-def home():
-    return "PostgreSQL bağlantısı başarılı!"
+@app.route('/test-db')
+def test_db():
+    try:
+        # Veritabanına basit bir sorgu gönderiyoruz
+        db.session.execute('SELECT 1')
+        return "PostgreSQL bağlantısı başarılı!"
+    except Exception as e:
+        return f"Bağlantı başarısız: {str(e)}"
 
 if __name__ == "__main__":
     app.run(debug=True)
